@@ -65,7 +65,7 @@ CREATE TABLE rent_a_car.veiculo (
     marca           VARCHAR(20)     NOT NULL,
     codigo          INT             NOT NULL,
 
-    FOREIGN KEY (codigo) REFERENCES rent_a_car.tipo_veiculo(codigo) ON DELETE NO ACTION ON UPDATE CASCADE,
+    FOREIGN KEY (codigo) REFERENCES rent_a_car.tipo_veiculo(codigo) ON UPDATE CASCADE,
 )
 
 CREATE TABLE rent_a_car.aluguer(
