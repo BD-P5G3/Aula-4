@@ -1,82 +1,82 @@
 -- Exercício 4.1.1
 
-DROP TABLE IF EXISTS rent_a_car.aluguer;
-DROP TABLE IF EXISTS rent_a_car.veiculo;
-DROP TABLE IF EXISTS rent_a_car.pesado;
-DROP TABLE IF EXISTS rent_a_car.ligeiro;
-DROP TABLE IF EXISTS rent_a_car.similaridade;
-DROP TABLE IF EXISTS rent_a_car.tipo_veiculo;
-DROP TABLE IF EXISTS rent_a_car.balcao;
-DROP TABLE IF EXISTS rent_a_car.cliente;
-DROP SCHEMA IF EXISTS rent_a_car;
+DROP TABLE IF EXISTS RENT_A_CAR.RENTAL;
+DROP TABLE IF EXISTS RENT_A_CAR.VEHICLE;
+DROP TABLE IF EXISTS RENT_A_CAR.HEAVY;
+DROP TABLE IF EXISTS RENT_A_CAR.LIGHT;
+DROP TABLE IF EXISTS RENT_A_CAR.SIMILARITY;
+DROP TABLE IF EXISTS RENT_A_CAR.TYPE_VEHICLE;
+DROP TABLE IF EXISTS RENT_A_CAR.COUNTER;
+DROP TABLE IF EXISTS RENT_A_CAR.CLIENT;
+DROP SCHEMA IF EXISTS RENT_A_CAR;
 GO
 
-CREATE SCHEMA rent_a_car;
+CREATE SCHEMA RENT_A_CAR;
 GO
 
-CREATE TABLE rent_a_car.cliente (
-    nif             INT             NOT NULL    PRIMARY KEY,
-    nome            VARCHAR(100)    NOT NULL,
-    endereco        VARCHAR(250),
-    num_carta       INT             NOT NULL    UNIQUE
-)
+CREATE TABLE RENT_A_CAR.CLIENT (
+    nif                    INT             NOT NULL    PRIMARY KEY,
+    name                   VARCHAR(100)    NOT NULL,
+    address                VARCHAR(250),
+    driving_license        INT             NOT NULL    UNIQUE
+);
 
-CREATE TABLE rent_a_car.balcao (
-    numero          INT             NOT NULL    PRIMARY KEY,
-    nome            VARCHAR(100)    NOT NULL,
-    endereco        VARCHAR(100) 
-)
+CREATE TABLE RENT_A_CAR.COUNTER (
+    number                 INT             NOT NULL    PRIMARY KEY,
+    name                   VARCHAR(100)    NOT NULL,
+    address                VARCHAR(100)
+);
 
-CREATE TABLE rent_a_car.tipo_veiculo (
-    codigo          INT             NOT NULL    PRIMARY KEY,
-    arcondicionado  BIT,
-    designacao      VARCHAR(250)    NOT NULL
-)
+CREATE TABLE RENT_A_CAR.TYPE_VEHICLE (
+    code                   INT             NOT NULL    PRIMARY KEY,
+    air_conditioning       BIT,
+    designation            VARCHAR(250)    NOT NULL
+);
 
-CREATE TABLE rent_a_car.similaridade (
-    codigo1         INT             NOT NULL,
-    codigo2         INT             NOT NULL,
-    PRIMARY KEY (codigo1, codigo2),
+CREATE TABLE RENT_A_CAR.SIMILARITY (
+    TYPE_VEHICLE_code1     INT             NOT NULL,
+    TYPE_VEHICLE_code2     INT             NOT NULL,
 
-    FOREIGN KEY (codigo1) REFERENCES rent_a_car.tipo_veiculo(codigo) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (codigo2) REFERENCES rent_a_car.tipo_veiculo(codigo)
-)
+    PRIMARY KEY (TYPE_VEHICLE_code1, TYPE_VEHICLE_code2),
+    FOREIGN KEY (TYPE_VEHICLE_code1) REFERENCES RENT_A_CAR.TYPE_VEHICLE(code) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (TYPE_VEHICLE_code2) REFERENCES RENT_A_CAR.TYPE_VEHICLE(code)
+);
 
-CREATE TABLE rent_a_car.ligeiro (
-    codigo          INT             NOT NULL    PRIMARY KEY,
-    combustivel     VARCHAR(50)     NOT NULL,
-    portas          INT,
-    num_lugares     INT             NOT NULL,
+CREATE TABLE RENT_A_CAR.LIGHT (
+    TYPE_VEHICLE_code      INT             NOT NULL    PRIMARY KEY,
+    fuel                   VARCHAR(50)     NOT NULL,
+    doors_num              INT,
+    seats_num              INT             NOT NULL,
     
-    FOREIGN KEY (codigo) REFERENCES rent_a_car.tipo_veiculo(codigo) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (TYPE_VEHICLE_code) REFERENCES RENT_A_CAR.TYPE_VEHICLE(code) ON DELETE CASCADE ON UPDATE CASCADE,
+);
+
+CREATE TABLE RENT_A_CAR.HEAVY (
+    TYPE_VEHICLE_code      INT             NOT NULL    PRIMARY KEY,
+    height                 INT,
+    passengers             INT             NOT NULL,
+
+    FOREIGN KEY (TYPE_VEHICLE_code) REFERENCES RENT_A_CAR.TYPE_VEHICLE(code) ON DELETE CASCADE ON UPDATE CASCADE,
 )
 
-CREATE TABLE rent_a_car.pesado (
-    codigo          INT             NOT NULL    PRIMARY KEY,
-    peso            INT,
-    passageiros     INT             NOT NULL,
+CREATE TABLE RENT_A_CAR.VEHICLE (
+    registration           VARCHAR(6)      NOT NULL    PRIMARY KEY,
+    year                   INT             NOT NULL,
+    brand                  VARCHAR(20)     NOT NULL,
+    TYPE_VEHICLE_code      INT             NOT NULL,
 
-    FOREIGN KEY (codigo) REFERENCES rent_a_car.tipo_veiculo(codigo) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (TYPE_VEHICLE_code) REFERENCES RENT_A_CAR.TYPE_VEHICLE(code) ON UPDATE CASCADE,
 )
 
-CREATE TABLE rent_a_car.veiculo (
-    matricula       VARCHAR(6)      NOT NULL    PRIMARY KEY,
-    ano             INT             NOT NULL,
-    marca           VARCHAR(20)     NOT NULL,
-    codigo          INT             NOT NULL,
+CREATE TABLE RENT_A_CAR.RENTAL(
+    number                 INT            NOT NULL     PRIMARY KEY,
+    duration               INT            NOT NULL,
+    RENTAL_date            DATE           NOT NULL,
+    VEHICLE_registration   VARCHAR(6)     NOT NULL,
+    CLIENT_nif             INT            NOT NULL,
+    COUNTER_number         INT            NOT NULL,
 
-    FOREIGN KEY (codigo) REFERENCES rent_a_car.tipo_veiculo(codigo) ON UPDATE CASCADE,
-)
-
-CREATE TABLE rent_a_car.aluguer(
-    numero          INT            NOT NULL     PRIMARY KEY,
-    duracao         INT            NOT NULL,
-    data_aluguer    DATE           NOT NULL,
-    matricula_vei   VARCHAR(6)     NOT NULL,
-    nif_cliente     INT            NOT NULL,
-    numero_balcao   INT            NOT NULL,
-
-    FOREIGN KEY (matricula_vei) REFERENCES rent_a_car.veiculo(matricula) ON UPDATE CASCADE,
-    FOREIGN KEY (nif_cliente) REFERENCES rent_a_car.cliente(nif) ON UPDATE CASCADE,
-    FOREIGN KEY (numero_balcao) REFERENCES rent_a_car.balcao(numero) ON UPDATE CASCADE
+    FOREIGN KEY (VEHICLE_registration) REFERENCES RENT_A_CAR.VEHICLE(registration) ON UPDATE CASCADE,
+    FOREIGN KEY (CLIENT_nif) REFERENCES RENT_A_CAR.CLIENT(nif) ON UPDATE CASCADE,
+    FOREIGN KEY (COUNTER_number) REFERENCES RENT_A_CAR.COUNTER(number) ON UPDATE CASCADE
 )
