@@ -33,7 +33,7 @@ CREATE TABLE flight_reservation.flight_leg (
     airport_code            VARCHAR(20)     NOT NULL,
     scheduled_arr_time      DATETIME        NOT NULL,
     scheduled_dep_time      DATETIME        NOT NULL,
-    PRIMARY KEY (flight_number, leg_no),
+    PRIMARY KEY (leg_no, flight_number),
     FOREIGN KEY (flight_number) REFERENCES flight_reservation.flight(number),
     FOREIGN KEY (airport_code) REFERENCES flight_reservation.airport(code),
     CHECK (scheduled_dep_time < scheduled_arr_time)
